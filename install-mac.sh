@@ -29,19 +29,24 @@ cat > "$SYNC_DIR/sync.sh" <<'EOF'
 #!/bin/sh
 # Mirrors every *.yml at the root of the research-skills repo into Espanso's match folder.
 # Espanso reloads by itself when the folder changes.
+set -e
 ZIP="https://github.com/vukappa4/research-skills/archive/refs/heads/main.zip"
 DEST="$HOME/Library/Application Support/espanso/match/research-skills"
 W=$(mktemp -d)
 trap 'rm -rf "$W"' EXIT
-curl -fsSL --max-time 60 "$ZIP" -o "$W/repo.zip" || exit 1
-unzip -q "$W/repo.zip" -d "$W/x" || exit 1
+curl -fsSL --max-time 60 "$ZIP" -o "$W/repo.zip"
+unzip -q "$W/repo.zip" -d "$W/x"
 mkdir "$W/new"
 for f in "$W"/x/*/*.yml; do
-  [ -f "$f" ] && grep -q '^matches:' "$f" && cp "$f" "$W/new/"
+  if [ -f "$f" ] && grep -q '^matches:' "$f"; then cp "$f" "$W/new/"; fi
 done
-ls "$W/new"/*.yml >/dev/null 2>&1 || exit 1
-diff -rq "$W/new" "$DEST" >/dev/null 2>&1 && exit 0
-[ -d "$DEST" ] && mv "$DEST" "$W/old"
+if ! ls "$W/new"/*.yml >/dev/null 2>&1; then
+  echo "research-skills: no skill files in the download" >&2
+  exit 1
+fi
+if diff -rq "$W/new" "$DEST" >/dev/null 2>&1; then exit 0; fi
+mkdir -p "$(dirname "$DEST")"
+if [ -d "$DEST" ]; then mv "$DEST" "$W/old"; fi
 mv "$W/new" "$DEST"
 echo "research-skills updated"
 EOF
