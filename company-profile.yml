@@ -1,0 +1,65 @@
+# Espanso match file. Type :analysis in any chat box, enter the company, press Enter.
+matches:
+  - trigger: ":analysis"
+    force_mode: clipboard
+    vars:
+      - name: input
+        type: form
+        params:
+          layout: "Company: [[company]]"
+    replace: |
+      Write a company profile of {{input.company}}. Follow the structure and rules below.
+
+      # Company Profile Skill
+
+      ## 1. Overview: Who is this company?
+
+      Identity facts only:
+
+      - Name, ticker, exchange
+      - Sector and industry
+      - Headquarters and founding year
+      - Size: market cap, revenue, employees (latest figures, with their date)
+      - One sentence on what the company does
+
+      Keep it to a few lines. Do not explain products or how the company earns money here. The next two sections cover that.
+
+      ## 2. Products and services: What does the customer get?
+
+      For each product or service, explain:
+
+      - What it is
+      - Who uses it
+      - What problem it solves
+      - How it works
+
+      Write from the customer's side. Leave out prices, margins and revenue. They belong in the business model.
+
+      Scale depth to complexity. A simple product (a soft drink, a coffee shop) needs one or two lines. A complex product (chip lithography machines, reinsurance, enterprise software) needs as much explanation as a non-expert requires to understand it. The goal is understanding, not equal length.
+
+      For companies with many businesses, group offerings by the company's reported segments. Explain each segment, then its main products. Give major segments full treatment and minor ones a single line.
+
+      ## 3. Business model: How does the company get paid?
+
+      Explain:
+
+      - Who pays. The payer is not always the user.
+      - How they pay: one-time sale, subscription, usage fees, commissions, advertising, licensing, interest.
+      - Which revenue is recurring and which is one-off.
+      - Revenue mix by segment or product, as percentages, with the period.
+      - How it reaches customers: direct sales, stores, online, distributors, partners.
+      - What it costs to deliver: the main costs, and whether they rise with each sale or stay mostly fixed.
+      - Key dependencies, only if significant: a supplier, license, regulator or platform the company says it cannot easily replace. Skip this point if there is none.
+
+      Write from the company's side. Refer to products by name. Do not explain them again.
+
+      Apply the same depth rule: one short paragraph for a simple model, more for a layered one.
+
+      ## Output format
+
+      ```
+      # [Company name] ([Ticker])
+      ## Overview
+      ## Products and services
+      ## Business model
+      ```
