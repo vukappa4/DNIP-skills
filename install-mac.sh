@@ -1,14 +1,14 @@
 #!/bin/sh
 # Installs Espanso and keeps the research skills in sync with GitHub.
 # Run in Terminal:
-#   /bin/sh -c "$(curl -fsSL https://raw.githubusercontent.com/vukappa4/research-skills/main/install-mac.sh)"
+#   /bin/sh -c "$(curl -fsSL https://raw.githubusercontent.com/vukappa4/DNIP-skills/main/install-mac.sh)"
 # Safe to run again: it updates everything in place.
 set -e
 
 ESPANSO_DMG="https://github.com/espanso/espanso/releases/download/v2.4.1/Espanso-Mac-Universal.dmg"
 CONFIG="$HOME/Library/Application Support/espanso"
 SYNC_DIR="$HOME/Library/Application Support/espanso-sync"
-PLIST="$HOME/Library/LaunchAgents/local.research-skills-sync.plist"
+PLIST="$HOME/Library/LaunchAgents/local.DNIP-skills-sync.plist"
 
 echo "1/4 Installing Espanso..."
 TMP=$(mktemp -d)
@@ -27,11 +27,11 @@ mkdir -p "$CONFIG/config" "$CONFIG/match" "$SYNC_DIR" "$HOME/Library/LaunchAgent
 echo "2/4 Installing the skill updater..."
 cat > "$SYNC_DIR/sync.sh" <<'EOF'
 #!/bin/sh
-# Mirrors every *.yml at the root of the research-skills repo into Espanso's match folder.
+# Mirrors every *.yml at the root of the DNIP-skills repo into Espanso's match folder.
 # Espanso reloads by itself when the folder changes.
 set -e
-ZIP="https://github.com/vukappa4/research-skills/archive/refs/heads/main.zip"
-DEST="$HOME/Library/Application Support/espanso/match/research-skills"
+ZIP="https://github.com/vukappa4/DNIP-skills/archive/refs/heads/main.zip"
+DEST="$HOME/Library/Application Support/espanso/match/DNIP-skills"
 W=$(mktemp -d)
 trap 'rm -rf "$W"' EXIT
 curl -fsSL --max-time 60 "$ZIP" -o "$W/repo.zip"
@@ -41,24 +41,24 @@ for f in "$W"/x/*/*.yml; do
   if [ -f "$f" ] && grep -q '^matches:' "$f"; then cp "$f" "$W/new/"; fi
 done
 if ! ls "$W/new"/*.yml >/dev/null 2>&1; then
-  echo "research-skills: no skill files in the download" >&2
+  echo "DNIP-skills: no skill files in the download" >&2
   exit 1
 fi
 if diff -rq "$W/new" "$DEST" >/dev/null 2>&1; then exit 0; fi
 mkdir -p "$(dirname "$DEST")"
 if [ -d "$DEST" ]; then mv "$DEST" "$W/old"; fi
 mv "$W/new" "$DEST"
-echo "research-skills updated"
+echo "DNIP-skills updated"
 EOF
 
 echo "3/4 Downloading the skills..."
 /bin/sh "$SYNC_DIR/sync.sh"
-ls "$CONFIG/match/research-skills"
+ls "$CONFIG/match/DNIP-skills"
 
 cat > "$PLIST" <<EOF
 <?xml version="1.0" encoding="UTF-8"?>
 <plist version="1.0"><dict>
-<key>Label</key><string>local.research-skills-sync</string>
+<key>Label</key><string>local.DNIP-skills-sync</string>
 <key>ProgramArguments</key><array><string>/bin/sh</string><string>$SYNC_DIR/sync.sh</string></array>
 <key>StartInterval</key><integer>600</integer>
 <key>RunAtLoad</key><true/>

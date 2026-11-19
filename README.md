@@ -1,4 +1,4 @@
-# research-skills
+# DNIP-skills
 
 Prompt templates for AI chat sites, expanded by [Espanso](https://espanso.org).
 
@@ -13,7 +13,7 @@ Each `*.yml` file at the repo root is one Espanso match file. Type its trigger i
 Paste in Terminal:
 
 ```
-/bin/sh -c "$(curl -fsSL https://raw.githubusercontent.com/vukappa4/research-skills/main/install-mac.sh)"
+/bin/sh -c "$(curl -fsSL https://raw.githubusercontent.com/vukappa4/DNIP-skills/main/install-mac.sh)"
 ```
 
 It installs Espanso and a background job that downloads the skills from `main` every 10 minutes. Then allow Espanso in System Settings > Privacy & Security > Accessibility.
